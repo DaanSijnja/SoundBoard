@@ -17,6 +17,11 @@ public class Audio
         audioClip = _audioClip;
     }
 
+    public void AddLoop(string _loopname, float x, float y)
+    {
+        Loops.Add(new Loop(_loopname,x,y));
+
+    }
 
 }
 
@@ -27,4 +32,9 @@ public struct Loop
     public string loopName;
     public Vector2 loopTime;
 
+    public Loop(string _name, float x, float y)
+    {   
+        loopName = _name;
+        loopTime = new Vector2(x,y);
+    }
 }
