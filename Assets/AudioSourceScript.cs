@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AddPannelScript : MonoBehaviour
-{   
-    [SerializeField] public Vector2 gridPos;
+public class AudioSourceScript : MonoBehaviour
+{
     // Start is called before the first frame update
     void Start()
     {
