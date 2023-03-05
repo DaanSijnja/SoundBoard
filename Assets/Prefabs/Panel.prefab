@@ -576,7 +576,7 @@ AudioSource:
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -745,13 +745,15 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   audioItem:
     audioName: 
-    audioClip: {fileID: 0}
+    audioPath: 
     Loops: []
+  audioGroup: 
   nameAudio: {fileID: 1532356897054519945}
   EndButton: {fileID: 1101580113298378015}
   PlayButton: {fileID: 8061073038416211894}
   LoopButtonPrefab: {fileID: 7616516712382812814, guid: fb3e270cd3df691498953b7c89e73ed6, type: 3}
   audioSource: {fileID: 8547819306152997576}
+  StopSound: 0
 --- !u!1 &8585314722192796537
 GameObject:
   m_ObjectHideFlags: 0

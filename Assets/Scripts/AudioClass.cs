@@ -8,33 +8,47 @@ using UnityEngine.Audio;
 public class Audio
 {
     public string audioName;
-    public AudioClip audioClip;
-    private string audioPath;
+    private AudioClip audioClip;
+    public string audioPath;
     public List<Loop> Loops;
 
-    public Audio(string _audioname, AudioClip _audioClip)
+    public Audio()
     {
-        audioName = _audioname;
-        audioClip = _audioClip;
+        Loops = new List<Loop>();
     }
 
-    public void SetAudioPath(string path)
+    public void SetAudioClip(AudioClip _audio)
     {
-        audioPath = path;
+        audioClip = _audio;
+    }
+
+    public AudioClip GetAudioClip()
+    {
+        return audioClip;
     }
 
     public void AddLoop(string _loopname, float x, float y)
-    {
-        Loops.Add(new Loop(_loopname,x,y));
+    {   
+        Loop loop = new Loop(_loopname,x,y);
+        Loops.Add(loop);
 
     }
 
-    public void TOJSON()
+    public string TOJSON()
     {
-
-
+        return JsonUtility.ToJson(this);
     }
 
+    public void FROMJSON(string JSON)
+    {
+        var loadedJSON = JsonUtility.FromJson<Audio>(JSON); 
+        audioName = loadedJSON.audioName;
+        audioPath = loadedJSON.audioPath;
+        foreach(Loop loop in loadedJSON.Loops)
+        {
+            Loops.Add(loop);
+        }
+    }
 }
 
 

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using AnotherFileBrowser.Windows;
+using UnityEngine.Networking;
 using TMPro;
 
 public class NewPannelInput : MonoBehaviour
@@ -58,9 +60,9 @@ public class NewPannelInput : MonoBehaviour
                 {
                     if(value > LoopHighValue)
                     {
-                        value = LoopHighValue;
+                        LoopLowSlider.value = LoopHighValue;
                     }
-                    LoopLowText.text = value * selectedAudioClip.length + "";
+                    LoopLowText.text = LoopLowSlider.value * selectedAudioClip.length + "";
                     
                 }
                 
@@ -75,9 +77,9 @@ public class NewPannelInput : MonoBehaviour
                 {
                     if(value < LoopLowValue)
                     {
-                        value = LoopLowValue;
+                       LoopHighSlider.value = LoopLowValue;
                     }
-                    LoopHighText.text = value * selectedAudioClip.length + "";
+                    LoopHighText.text = LoopHighSlider.value * selectedAudioClip.length + "";
                 }
             }
 
@@ -91,9 +93,11 @@ public class NewPannelInput : MonoBehaviour
     //Gets all the values and makes a new Audio Class object
     void Confirm()
     {
-        var audio = new Audio(audioName.text, selectedAudioClip);
+        var audio = new Audio();
+        audio.audioName = audioName.text;
+        audio.SetAudioClip(selectedAudioClip);
 
-        audio.SetAudioPath(selectedAudioPath);
+        audio.audioPath = selectedAudioPath;
 
         if(LoopLowValue - LoopHighValue != 0)
         {
@@ -115,13 +119,13 @@ public class NewPannelInput : MonoBehaviour
 
     void Browse()
     {
-        selectedAudioPath = FolderBrowser.Instance.OpenFileBrowser();
+        selectedAudioPath = OpenFileBrowser();
 
         if(selectedAudioPath != "")
         {
             BrowseField.text = selectedAudioPath;
             
-            FolderBrowser.Instance.OpenFileFromPath(selectedAudioPath,ref selectedAudioClip);
+            OpenFileFromPath(selectedAudioPath);
 
         }
         else
@@ -133,12 +137,7 @@ public class NewPannelInput : MonoBehaviour
 
     }   
 
-    void ClipFound(AudioClip audio)
-    {
 
-
-       
-    }
     //play the selected audio clip if there is one
     void Play()
     {
@@ -161,4 +160,55 @@ public class NewPannelInput : MonoBehaviour
     {
         
     }
+
+
+    //Handle File opening
+    public string OpenFileBrowser()
+    {
+        string path = "";
+
+        var bp = new BrowserProperties();
+        bp.filter = "Audio File (*.mp3) | *mp3";
+        bp.filterIndex = 0;
+
+        new FileBrowser().OpenFileBrowser(bp, foundPath => {
+            path = foundPath;
+        });
+
+        return path;
+    }
+
+    public void OpenFileFromPath(string path)
+    {
+     
+        StartCoroutine(LoadAudioClip(path));
+    
+    }
+
+    IEnumerator LoadAudioClip(string path)
+    {   
+        using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path,AudioType.MPEG))
+        {
+            yield return uwr.SendWebRequest();
+
+            if(uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+            {
+                selectedAudioClip = null;
+                ConfirmButton.interactable = false;
+                LoopLowSlider.interactable = false;
+                LoopHighSlider.interactable = false;
+            }
+            else
+            {
+                selectedAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
+                ConfirmButton.interactable = true;
+                LoopLowSlider.interactable = true;
+                LoopHighSlider.interactable = true;
+            }
+
+        }
+
+    }
+
+
 }

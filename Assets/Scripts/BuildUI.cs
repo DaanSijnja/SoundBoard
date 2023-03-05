@@ -21,7 +21,7 @@ public class BuildUI : MonoBehaviour
     [SerializeField] Slider scrollSlider;
     
     //The Audio group this tab belongs to   
-    [SerializeField] public AudioScriptableObject audioGroup;
+    [SerializeField] public SoundGroup soundGroup;
 
     //Some constants for the making of the pannels
     private int totalLenghtOfCanvas;
@@ -37,7 +37,7 @@ public class BuildUI : MonoBehaviour
         pannelList = new List<PanelScript>();
 
         //Easy acces for the total pannel count
-        int totalPannels = audioGroup.audioList.Count;
+        int totalPannels = soundGroup.AudioList.Count;
 
         //Calulate the Canvas length for the scroll function
         totalLenghtOfCanvas = (int)( (int) (totalPannels/maxPannelsPerPage) * maxPannelsPerRow * 200);
@@ -68,8 +68,8 @@ public class BuildUI : MonoBehaviour
                     
                     //Set some values to the pannel
                     script.gridPos = new Vector2(i * 4 + k ,j);
-                    script.audioGroup = audioGroup.groupName;
-                    script.audioItem = audioGroup.audioList[(int)(maxPannelsPerPage * i + j * maxPannelsPerRow + k)];
+                    script.audioGroup = soundGroup.GroupName;
+                    script.audioItem = soundGroup.AudioList[(int)(maxPannelsPerPage * i + j * maxPannelsPerRow + k)];
 
 
                     //Add the Pannel to the PannelList
@@ -87,6 +87,7 @@ public class BuildUI : MonoBehaviour
         //Set the gridPos of the AddPannel
         AddPannel = obj.GetComponent<AddPannelScript>();
         AddPannel.gridPos = CalcNextPosInRow();
+        AddPannel.UIManager = this;
 
         //Set the coords and parent to the Add Button 
         obj.transform.SetParent(transform);
@@ -94,35 +95,35 @@ public class BuildUI : MonoBehaviour
 
       
         //Check the Slider for the Scrollbar
-        scrollSlider.onValueChanged.AddListener(
-            (value)=>
-            {
-                //For each panelScript in the List of Pannels
-                foreach(PanelScript panelScript in pannelList)
-                {
-                    //Add the slider value to the X pos and reset the y pos
-                    float x = panelScript.gridPos.x*200 + 100 - totalLenghtOfCanvas*value;
-                    float y =  800 - panelScript.gridPos.y*200 - 100;
-                    panelScript.transform.position = new Vector3(x,y,0);
-                }
-
-                float _x = AddPannel.gridPos.x*200 + 100 - totalLenghtOfCanvas*value;
-                float _y = 800 - AddPannel.gridPos.y*200 - 100;
-
-                AddPannel.transform.position = new Vector3(_x,_y,0);
-                
-            }
-        );
+        scrollSlider.onValueChanged.AddListener((_) => { UpdateUI(); } );
 
     }
 
     //Add a new pannel to the UI and updates the Add Pannel pannel
     public void AddPannelToUI(Audio newAudio)
-    {
-        
+    {   
+        Vector2 PannelCoords = CalcNextPosInRow();
+        soundGroup.AudioList.Add(newAudio);
+        //Instanciate new Pannel
+        var pannel = Instantiate(PannelPrefab);
+        var script = pannel.GetComponent<PanelScript>();
 
+        //Set the transform of the new pannel
+        pannel.transform.SetParent(transform);
 
+        script.gridPos = PannelCoords;
+        script.audioGroup = soundGroup.GroupName;
+        script.audioItem = newAudio;
+        //Add the Pannel to the PannelList
+        pannelList.Add(script);
 
+        //Transform the AddPannel
+        Vector2 AddPannelCoords = CalcNextPosInRow();
+        AddPannel.gridPos = AddPannelCoords;
+
+        SaveAndLoadManager.Instance.Save(soundGroup);
+
+        UpdateUI();
     }
 
 
@@ -137,7 +138,10 @@ public class BuildUI : MonoBehaviour
             panelScript.transform.position = new Vector3(x,y,0);
         }    
 
-        
+        float _x = AddPannel.gridPos.x*200 + 100 - totalLenghtOfCanvas*scrollSlider.value;
+        float _y = 800 - AddPannel.gridPos.y*200 - 100;
+
+        AddPannel.transform.position = new Vector3(_x,_y,0);
 
 
     }
@@ -146,6 +150,9 @@ public class BuildUI : MonoBehaviour
     //Calculates which gridpos the next pannel should have
     Vector2 CalcNextPosInRow()
     {
+        if(pannelList.Count == 0)
+            return new Vector2(0,0);
+
         var lastPannel = pannelList[pannelList.Count-1];
         float _x = lastPannel.gridPos.x;
         float _y = lastPannel.gridPos.y;
@@ -163,7 +170,7 @@ public class BuildUI : MonoBehaviour
             y = _y +1;
         }
 
-        if(_y == 2)
+        if(y > 2)
         {
             y = 0;
             x = _x + 1;

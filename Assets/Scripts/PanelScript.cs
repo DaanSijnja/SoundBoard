@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Networking;
+
 public class PanelScript : MonoBehaviour
 {   
     //Grid position
@@ -34,7 +36,7 @@ public class PanelScript : MonoBehaviour
 
     //Easy acces vars
     float AudioTime {get => audioSource.time; set => audioSource.time = value;}
-    float AudioLenght {get => audioItem.audioClip.length;}
+    float AudioLenght {get => audioItem.GetAudioClip().length;}
     
 
 
@@ -47,7 +49,7 @@ public class PanelScript : MonoBehaviour
         {
             //Set the text to the name of the audio item
             nameAudio.text = audioItem.audioName;
-
+            OpenAudioFromPath(audioItem.audioPath);
             //Loop for each Loop in the audio item
             int i = 0;
             foreach(Loop loop in audioItem.Loops)
@@ -71,7 +73,7 @@ public class PanelScript : MonoBehaviour
         }
 
         //Set the AudioSource Clip to the AudioItem audioclip
-        audioSource.clip = audioItem.audioClip;
+        
 
         //Add Listeners to the Play and End Button
         PlayButton.onClick.AddListener( () => PlayFull() );
@@ -180,4 +182,35 @@ public class PanelScript : MonoBehaviour
 
         }
     }
+
+    //File Opening
+    public void OpenAudioFromPath(string path)
+    {
+     
+        StartCoroutine(LoadAudioClip(path));
+    
+    }
+
+    IEnumerator LoadAudioClip(string path)
+    {   
+        using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path,AudioType.MPEG))
+        {
+            yield return uwr.SendWebRequest();
+
+            if(uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+            {
+                
+                
+            }
+            else
+            {
+                audioItem.SetAudioClip(DownloadHandlerAudioClip.GetContent(uwr));
+                audioSource.clip = audioItem.GetAudioClip();
+                
+
+            }
+
+        }
+    }
+
 }

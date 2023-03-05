@@ -44,7 +44,7 @@ public class AddPannelScript : MonoBehaviour
     {
 
         Debug.Log(audio);
-
+        UIManager.AddPannelToUI(audio);
     }
 
     public void Cancel()
