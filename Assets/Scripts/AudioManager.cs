@@ -7,7 +7,7 @@ public class AudioManager : MonoBehaviour
 {
 
 
-
+    //Sliders and button for Fading of sound, the volume and a StopButton
     [SerializeField] Slider fadeInSlider;
     [SerializeField] Slider volumeSlider;
     [SerializeField] Button StopSoundButton;
@@ -22,15 +22,19 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        //Set Instance to this so it can be revrenced every where
         if(Instance != null)
             Destroy(this.gameObject);
 
         Instance = this;
 
+
+        //Call when the StopSound button is pressed
         StopSoundButton.onClick.AddListener(
             () =>
-            {
+            {   
+                //Stop the current music
                 if(currentCombatMusic != null)
                 {
                     currentCombatMusic.Stop();
@@ -42,6 +46,7 @@ public class AudioManager : MonoBehaviour
 
     }
 
+    //Set a pannel as current playing pannel
     public void SetAsCurrent(string audioGroup, PanelScript pannel)
     {
         switch(audioGroup)
@@ -56,20 +61,12 @@ public class AudioManager : MonoBehaviour
 
             break;
 
-            case "BackgroundMusic":
-                if(currentBackgroundMusic != null)
-                {
-                    currentBackgroundMusic.Stop();
-                }
-
-                currentBackgroundMusic = pannel;
-
-            break;
-
+        
         }
 
     }
 
+    //Remove as current playing pannel
     public void RemoveAsCurrent(string audioGroup, PanelScript pannel)
     {
         switch(audioGroup)
@@ -83,14 +80,7 @@ public class AudioManager : MonoBehaviour
 
             break;
 
-            case "BackgroundMusic":
-                if(currentBackgroundMusic == pannel)
-                {
-                    currentBackgroundMusic = null;
-                }
-
-            break;
-
+        
         }
     }
 

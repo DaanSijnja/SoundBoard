@@ -15,17 +15,62 @@ MonoBehaviour:
   groupName: CombatMusic
   audioList:
   - audioName: Death Knell
-    audioClip: {fileID: 8300000, guid: 7b508eb756c51e044bb6fbe4b862cbba, type: 3}
+    audioPath: 
     Loops:
     - loopName: Main
       loopTime: {x: 24.48, y: 60.48}
   - audioName: Fall of the Hammer
-    audioClip: {fileID: 8300000, guid: 9928158f5a87b92428da86dccd7014db, type: 3}
+    audioPath: 
     Loops:
     - loopName: Main
       loopTime: {x: 0, y: 0}
   - audioName: Tension
-    audioClip: {fileID: 8300000, guid: 8eba97cdb85bf7946a80ee692a8aea52, type: 3}
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioPath: 
     Loops:
     - loopName: Main
       loopTime: {x: 0, y: 0}
