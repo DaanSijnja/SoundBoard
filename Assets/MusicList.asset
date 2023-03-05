@@ -94,3 +94,18 @@ MonoBehaviour:
     Loops:
     - loopName: Main
       loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioClip: {fileID: 8300000, guid: 8eba97cdb85bf7946a80ee692a8aea52, type: 3}
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioClip: {fileID: 8300000, guid: 8eba97cdb85bf7946a80ee692a8aea52, type: 3}
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}
+  - audioName: Tension
+    audioClip: {fileID: 8300000, guid: 8eba97cdb85bf7946a80ee692a8aea52, type: 3}
+    Loops:
+    - loopName: Main
+      loopTime: {x: 0, y: 0}

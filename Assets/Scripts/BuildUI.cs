@@ -52,7 +52,7 @@ public class BuildUI : MonoBehaviour
         for(i = 0; Mathf.RoundToInt((totalPannels/maxPannelsPerPage) + 0.5f) > i; i++)
         {
             //Check how many colums there are and for loop this, check if there are no more pannels on a column than allowed.
-            for(j = 0;Mathf.RoundToInt(( ( totalPannels - i * maxPannelsPerPage ) / maxPannelsPerColumn)+ 0.5f) > j && maxPannelsPerColumn  > j; j++)
+            for(j = 0; Mathf.RoundToInt(( ( totalPannels - i * maxPannelsPerPage ) / maxPannelsPerColumn)+ 0.5f) > j && maxPannelsPerColumn  > j; j++)
             {
                 //Check how many pannels there still remaining and if there are not more pannels on a row than allowed
                 for(k = 0; (totalPannels - maxPannelsPerPage * i - j * maxPannelsPerRow - k > 0) && maxPannelsPerRow > k; k++)
@@ -80,16 +80,6 @@ public class BuildUI : MonoBehaviour
             }
 
         }
-        
-
-        //Find the last pannel form the list (this is also the last coords a pannel is placed on)
-        var lastPannel = pannelList[pannelList.Count-1];
-        float _x = lastPannel.gridPos.x;
-        float _y = lastPannel.gridPos.y;
-
-    
-        
-
 
         //Make the Add Button
         var obj = Instantiate(AddPannelPrefab);
@@ -129,7 +119,7 @@ public class BuildUI : MonoBehaviour
     //Add a new pannel to the UI and updates the Add Pannel pannel
     public void AddPannelToUI(Audio newAudio)
     {
-
+        
 
 
 

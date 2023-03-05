@@ -484,3 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridPos: {x: 0, y: 0}
+  UIManager: {fileID: 0}
+  NewPanneInputPrefab: {fileID: 242822597636093509, guid: 642279be43ce38749ab07db924df8ffb, type: 3}
+  CurrentInput: {fileID: 0}
+  AddButton: {fileID: 8292709872849398967}
