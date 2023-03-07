@@ -67,6 +67,7 @@ public class BuildUI : MonoBehaviour
                     pannel.transform.position = new Vector3(i*200*4 + k*200 + 100,800 - j*200 - 100,0);
                     
                     //Set some values to the pannel
+                    script.uiowner = this;
                     script.gridPos = new Vector2(i * 4 + k ,j);
                     script.audioGroup = soundGroup.GroupName;
                     script.audioItem = soundGroup.AudioList[(int)(maxPannelsPerPage * i + j * maxPannelsPerRow + k)];
@@ -111,6 +112,7 @@ public class BuildUI : MonoBehaviour
         //Set the transform of the new pannel
         pannel.transform.SetParent(transform);
 
+        script.uiowner = this;
         script.gridPos = PannelCoords;
         script.audioGroup = soundGroup.GroupName;
         script.audioItem = newAudio;
@@ -148,7 +150,7 @@ public class BuildUI : MonoBehaviour
 
 
     //Converts a grid pos to the List position
-    int Vector2ToListPosition(Vector2 gridPos)
+    public int Vector2ToListPosition(Vector2 gridPos)
     {
         int x = (int)gridPos.x;
         int y = (int)gridPos.y;
@@ -157,7 +159,7 @@ public class BuildUI : MonoBehaviour
     }
 
     //Converts a Listposition to a grid pos
-    Vector2 ListPositionToVector2(int listPos)
+    public Vector2 ListPositionToVector2(int listPos)
     {
         int x = (int)(Mathf.Floor(listPos/12f)*4 + listPos%4);
         int y = (int)((listPos%12)/4);

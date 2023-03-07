@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Networking;
 
-public class PanelScript : MonoBehaviour
+public class PanelScript : MonoBehaviour, INewPannelInput
 {   
     //Grid position
     [SerializeField] public Vector2 gridPos;
@@ -18,10 +18,18 @@ public class PanelScript : MonoBehaviour
     [SerializeField] TMP_Text nameAudio;
     //End button
     [SerializeField] Button EndButton;
+    //Edit button
+    [SerializeField] Button EditButton;
     //Play Button
     [SerializeField] Button PlayButton;
     //Button prefab for the loops
     [SerializeField] GameObject LoopButtonPrefab;
+    [SerializeField] GameObject PannelEditorPrefab;
+
+    private List<GameObject> loopButtons;
+
+    [SerializeField] public BuildUI uiowner;
+
 
     //The Audio source
     [SerializeField] AudioSource audioSource;
@@ -44,6 +52,7 @@ public class PanelScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
+        loopButtons = new List<GameObject>();
         //Check if there is a audioItem
         if(audioItem != null)
         {
@@ -62,11 +71,15 @@ public class PanelScript : MonoBehaviour
                 var obj = Instantiate(LoopButtonPrefab);
                 obj.GetComponentInChildren<TMP_Text>().text = loop.loopName;
                 obj.transform.SetParent(transform);
-                obj.transform.localPosition = new Vector3(0,-47.9f + i*30,0);
+                obj.transform.localPosition = new Vector3(0,-17.9f + i*30,0);
 
                 //Add an addlistener for a button press
                 obj.GetComponent<Button>().onClick.AddListener( () => PlayLoop(loop) );
 
+
+                loopButtons.Add(obj);
+
+                
                 i++;
             }
 
@@ -78,9 +91,67 @@ public class PanelScript : MonoBehaviour
         //Add Listeners to the Play and End Button
         PlayButton.onClick.AddListener( () => PlayFull() );
         EndButton.onClick.AddListener( () => Stop() );
+        EditButton.onClick.AddListener( () => OpenPannelEdit() );
 
 
     }
+
+    public void EditPannel(Audio audio)
+    {
+        uiowner.soundGroup.AudioList[uiowner.Vector2ToListPosition(gridPos)] = audio;
+        SaveAndLoadManager.Instance.Save(uiowner.soundGroup);
+        nameAudio.text = audio.audioName;
+        audioItem = audio;
+
+        foreach(GameObject gameobj in loopButtons)
+        {
+            
+            Destroy(gameobj);
+
+        }
+
+        loopButtons.Clear();
+
+        OpenAudioFromPath(audioItem.audioPath);
+            //Loop for each Loop in the audio item
+        int i = 0;
+        foreach(Loop loop in audio.Loops)
+        {   
+            //Max 3 loops on display
+            if(i >= 3)
+                break;
+            //Instanciate the new Loop button and set some values
+            var obj = Instantiate(LoopButtonPrefab);
+            obj.GetComponentInChildren<TMP_Text>().text = loop.loopName;
+            obj.transform.SetParent(transform);
+            obj.transform.localPosition = new Vector3(0,-17.9f + i*30,0);
+            //Add an addlistener for a button press
+            obj.GetComponent<Button>().onClick.AddListener( () => PlayLoop(loop) );
+            loopButtons.Add(obj);
+            
+            i++;
+        }
+
+    }   
+
+    public void CancelPannel()
+    {
+
+    }   
+
+
+    public void OpenPannelEdit()
+    {
+        var obj = Instantiate(PannelEditorPrefab);
+        obj.transform.SetParent(transform.parent);
+        obj.transform.localPosition = Vector3.zero;
+
+        var script = obj.GetComponent<NewPannelInput>();
+        script.newPannelInputOwner = GetComponent<INewPannelInput>();
+        script.EditAudio(audioItem);
+
+    }
+
 
     //Play the audio normal and adds sets the Loop
     public void PlayLoop(Loop loop)

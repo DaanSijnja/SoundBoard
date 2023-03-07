@@ -13,9 +13,6 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
     //Browse Inputs
     [SerializeField] TMP_InputField BrowseField;
     [SerializeField] Button BrowseButton;
-
-  
-
     //Buttons
     [SerializeField] Button PlayButton;
     [SerializeField] Button ConfirmButton;
@@ -27,18 +24,18 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
     public AudioClip selectedAudioClip;
     private string selectedAudioPath;
 
-    private List<Loop> loops;
-    private List<GameObject> loopDisplays;
+    private List<Loop> loops = new List<Loop>();
+    private List<GameObject> loopDisplays = new List<GameObject>();
     
     public GameObject AddLoopPrefab;
     public GameObject LoopDisplayPrefab;
     public INewPannelInput newPannelInputOwner;
+    private bool editMode = false;
 
     // Start is called before the first frame update
     void Start()
-    {
-        loops = new List<Loop>();
-        loopDisplays = new List<GameObject>();
+    {   
+                
         
         //Onclicks for the buttons
         ConfirmButton.onClick.AddListener(() => Confirm());
@@ -47,8 +44,6 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
         PlayButton.onClick.AddListener(() => Play());
         AddLoopButton.onClick.AddListener(() => OpenAddLoop());
 
-
-        
 
     }
 
@@ -105,6 +100,27 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
             loops[loopIndex] = editedLoop;
             loopDisplays[loopIndex].transform.GetChild(0).GetComponent<TMP_Text>().text = editedLoop.loopName;
         }
+    }
+
+
+    public void EditAudio(Audio audio)
+    {   
+
+        audioName.text = audio.audioName;
+        BrowseField.text = audio.audioPath;
+        selectedAudioClip = audio.GetAudioClip();
+        selectedAudioPath = audio.audioPath;
+
+        foreach(Loop loop in audio.Loops)
+        {   
+            LoopInputConfirm(loop);
+        }
+
+        ConfirmButton.interactable = true;
+        PlayButton.interactable = true;
+        AddLoopButton.interactable = true;
+
+        editMode = true;
     }
 
 
