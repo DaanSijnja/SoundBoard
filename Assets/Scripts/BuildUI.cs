@@ -67,6 +67,7 @@ public class BuildUI : MonoBehaviour
                     pannel.transform.position = new Vector3(i*200*4 + k*200 + 100,800 - j*200 - 100,0);
                     
                     //Set some values to the pannel
+                    script.uiowner = this;
                     script.gridPos = new Vector2(i * 4 + k ,j);
                     script.audioGroup = soundGroup.GroupName;
                     script.audioItem = soundGroup.AudioList[(int)(maxPannelsPerPage * i + j * maxPannelsPerRow + k)];
@@ -86,7 +87,7 @@ public class BuildUI : MonoBehaviour
 
         //Set the gridPos of the AddPannel
         AddPannel = obj.GetComponent<AddPannelScript>();
-        AddPannel.gridPos = CalcNextPosInRow();
+        AddPannel.gridPos = ListPositionToVector2(pannelList.Count);
         AddPannel.UIManager = this;
 
         //Set the coords and parent to the Add Button 
@@ -102,7 +103,7 @@ public class BuildUI : MonoBehaviour
     //Add a new pannel to the UI and updates the Add Pannel pannel
     public void AddPannelToUI(Audio newAudio)
     {   
-        Vector2 PannelCoords = CalcNextPosInRow();
+        Vector2 PannelCoords = ListPositionToVector2(pannelList.Count);
         soundGroup.AudioList.Add(newAudio);
         //Instanciate new Pannel
         var pannel = Instantiate(PannelPrefab);
@@ -111,6 +112,7 @@ public class BuildUI : MonoBehaviour
         //Set the transform of the new pannel
         pannel.transform.SetParent(transform);
 
+        script.uiowner = this;
         script.gridPos = PannelCoords;
         script.audioGroup = soundGroup.GroupName;
         script.audioItem = newAudio;
@@ -118,7 +120,7 @@ public class BuildUI : MonoBehaviour
         pannelList.Add(script);
 
         //Transform the AddPannel
-        Vector2 AddPannelCoords = CalcNextPosInRow();
+        Vector2 AddPannelCoords = ListPositionToVector2(pannelList.Count);
         AddPannel.gridPos = AddPannelCoords;
 
         SaveAndLoadManager.Instance.Save(soundGroup);
@@ -126,7 +128,27 @@ public class BuildUI : MonoBehaviour
         UpdateUI();
     }
 
+    public void RemovePannel(PanelScript pannel)
+    {
+        int listpos = Vector2ToListPosition(pannel.gridPos);
 
+
+        for(int i = listpos + 1; i < pannelList.Count; i++)
+        {
+            pannelList[i].gridPos = ListPositionToVector2(i-1);
+        }
+
+
+        pannelList.RemoveAt(listpos);
+        soundGroup.AudioList.RemoveAt(listpos);
+        Destroy(pannel.gameObject);
+
+        AddPannel.gridPos = ListPositionToVector2(pannelList.Count);
+        
+        SaveAndLoadManager.Instance.Save(soundGroup);
+
+        UpdateUI();
+    }
 
     public void UpdateUI()
     {
@@ -147,39 +169,23 @@ public class BuildUI : MonoBehaviour
     }
 
 
-    //Calculates which gridpos the next pannel should have
-    Vector2 CalcNextPosInRow()
+    //Converts a grid pos to the List position
+    public int Vector2ToListPosition(Vector2 gridPos)
     {
-        if(pannelList.Count == 0)
-            return new Vector2(0,0);
+        int x = (int)gridPos.x;
+        int y = (int)gridPos.y;
 
-        var lastPannel = pannelList[pannelList.Count-1];
-        float _x = lastPannel.gridPos.x;
-        float _y = lastPannel.gridPos.y;
+        return (int)(Mathf.Floor(x/4)*maxPannelsPerPage + x%maxPannelsPerRow + y*maxPannelsPerRow);
+    }
 
-        //Fancy stuff for making a new coord for a new pannel
-        float x = _x, y = _y;
-
-        if((_x+1) % 4 != 0)
-        {
-            x = _x + 1;
-        }
-        else
-        {
-            x = _x - 3;
-            y = _y +1;
-        }
-
-        if(y > 2)
-        {
-            y = 0;
-            x = _x + 1;
-
-        }
+    //Converts a Listposition to a grid pos
+    public Vector2 ListPositionToVector2(int listPos)
+    {
+        int x = (int)(Mathf.Floor(listPos/12f)*4 + listPos%4);
+        int y = (int)((listPos%12)/4);
 
         return new Vector2(x,y);
     }
-
 
     // Update is called once per frame
     void Update()

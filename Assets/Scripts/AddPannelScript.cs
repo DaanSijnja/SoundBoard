@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AddPannelScript : MonoBehaviour
+public class AddPannelScript : MonoBehaviour, INewPannelInput
 {      
     //Gridpos and UI Manager
     [SerializeField] public Vector2 gridPos;
@@ -34,24 +34,28 @@ public class AddPannelScript : MonoBehaviour
             var obj = Instantiate(NewPanneInputPrefab);
             
             CurrentInput = obj.GetComponent<NewPannelInput>();
-            CurrentInput.ownerAddPannel = this;
+            CurrentInput.newPannelInputOwner = GetComponent<INewPannelInput>();
             CurrentInput.transform.SetParent(transform.parent);
             obj.transform.localPosition = Vector3.zero;
         }
     }
-
-    public void NewPannel(Audio audio)
+    
+    public void EditPannel(Audio audio)
     {
 
         Debug.Log(audio);
         UIManager.AddPannelToUI(audio);
     }
 
-    public void Cancel()
+    public void CancelPannel()
     {
         CurrentInput = null;
     }
 
+    public void RemovePannel()
+    {
+        
+    }
 
 
 }
