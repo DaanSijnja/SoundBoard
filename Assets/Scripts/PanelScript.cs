@@ -137,7 +137,13 @@ public class PanelScript : MonoBehaviour, INewPannelInput
     public void CancelPannel()
     {
 
-    }   
+    }  
+
+    public void RemovePannel()
+    {
+        uiowner.RemovePannel(this);
+
+    }
 
 
     public void OpenPannelEdit()

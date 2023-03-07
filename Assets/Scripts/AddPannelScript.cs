@@ -52,6 +52,10 @@ public class AddPannelScript : MonoBehaviour, INewPannelInput
         CurrentInput = null;
     }
 
+    public void RemovePannel()
+    {
+        
+    }
 
 
 }

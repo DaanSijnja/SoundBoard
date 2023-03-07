@@ -128,7 +128,27 @@ public class BuildUI : MonoBehaviour
         UpdateUI();
     }
 
+    public void RemovePannel(PanelScript pannel)
+    {
+        int listpos = Vector2ToListPosition(pannel.gridPos);
 
+
+        for(int i = listpos + 1; i < pannelList.Count; i++)
+        {
+            pannelList[i].gridPos = ListPositionToVector2(i-1);
+        }
+
+
+        pannelList.RemoveAt(listpos);
+        soundGroup.AudioList.RemoveAt(listpos);
+        Destroy(pannel.gameObject);
+
+        AddPannel.gridPos = ListPositionToVector2(pannelList.Count);
+        
+        SaveAndLoadManager.Instance.Save(soundGroup);
+
+        UpdateUI();
+    }
 
     public void UpdateUI()
     {

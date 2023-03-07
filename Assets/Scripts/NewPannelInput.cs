@@ -10,6 +10,7 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
 {
 
     [SerializeField] TMP_InputField audioName;
+    [SerializeField] TMP_Text audioTitle;
     //Browse Inputs
     [SerializeField] TMP_InputField BrowseField;
     [SerializeField] Button BrowseButton;
@@ -18,7 +19,7 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
     [SerializeField] Button ConfirmButton;
     [SerializeField] Button CancelButton;
     [SerializeField] Button AddLoopButton;
-
+    [SerializeField] Button RemoveButton;
     [SerializeField] AudioSource audioSource;
 
     public AudioClip selectedAudioClip;
@@ -35,7 +36,7 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
     // Start is called before the first frame update
     void Start()
     {   
-                
+           
         
         //Onclicks for the buttons
         ConfirmButton.onClick.AddListener(() => Confirm());
@@ -43,7 +44,13 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
         CancelButton.onClick.AddListener(() => Cancel());
         PlayButton.onClick.AddListener(() => Play());
         AddLoopButton.onClick.AddListener(() => OpenAddLoop());
+        RemoveButton.onClick.AddListener(() => RemovePannel());
 
+        if(editMode != true)
+        {
+            RemoveButton.gameObject.SetActive(false);    
+            audioTitle.text = "Ëdit Audio :";
+        }    
 
     }
 
@@ -121,6 +128,12 @@ public class NewPannelInput : MonoBehaviour, ILoopInput
         AddLoopButton.interactable = true;
 
         editMode = true;
+    }
+
+    void RemovePannel()
+    {
+        newPannelInputOwner.RemovePannel();
+        Destroy(this.gameObject);
     }
 
 
@@ -246,4 +259,6 @@ public interface INewPannelInput
 {
     public void EditPannel(Audio audio);
     public void CancelPannel();
+
+    public void RemovePannel();
 }
