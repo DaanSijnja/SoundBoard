@@ -5,7 +5,8 @@ A Soundboard for TTRPGs with a loop combat / background music functionality
 Work this page out
 
 
-
+## what's Next?
+See the issues tab for what I am working on.
 
 
 # Changelog
