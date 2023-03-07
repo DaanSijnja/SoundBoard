@@ -720,7 +720,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 242822597142662207}
   m_OnClick:
     m_PersistentCalls:
@@ -1283,7 +1283,6 @@ MonoBehaviour:
   selectedAudioClip: {fileID: 0}
   AddLoopPrefab: {fileID: 1887126259137590565, guid: a335baf42a699044ba100cfe55bff009, type: 3}
   LoopDisplayPrefab: {fileID: 2373906223642093014, guid: c96d158b96a0b22478124e15e82dd491, type: 3}
-  ownerAddPannel: {fileID: 0}
 --- !u!82 &242822597636093562
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2762,7 +2761,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 242822598884178193}
   m_TextViewport: {fileID: 242822596958952560}
   m_TextComponent: {fileID: 242822598734256186}
@@ -3073,7 +3072,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 6138927125107398115}
   m_OnClick:
     m_PersistentCalls:

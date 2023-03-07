@@ -184,7 +184,7 @@ public class PanelScript : MonoBehaviour
     }
 
     //File Opening
-    public void OpenAudioFromPath(string path)
+    public void OpenAudioFromPath(string path) 
     {
      
         StartCoroutine(LoadAudioClip(path));

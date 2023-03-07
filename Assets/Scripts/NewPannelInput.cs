@@ -6,7 +6,7 @@ using AnotherFileBrowser.Windows;
 using UnityEngine.Networking;
 using TMPro;
 
-public class NewPannelInput : MonoBehaviour, LoopInput
+public class NewPannelInput : MonoBehaviour, ILoopInput
 {
 
     [SerializeField] TMP_InputField audioName;
@@ -28,16 +28,17 @@ public class NewPannelInput : MonoBehaviour, LoopInput
     private string selectedAudioPath;
 
     private List<Loop> loops;
-    
+    private List<GameObject> loopDisplays;
     
     public GameObject AddLoopPrefab;
     public GameObject LoopDisplayPrefab;
-    public AddPannelScript ownerAddPannel;
+    public INewPannelInput newPannelInputOwner;
 
     // Start is called before the first frame update
     void Start()
     {
         loops = new List<Loop>();
+        loopDisplays = new List<GameObject>();
         
         //Onclicks for the buttons
         ConfirmButton.onClick.AddListener(() => Confirm());
@@ -55,21 +56,55 @@ public class NewPannelInput : MonoBehaviour, LoopInput
     {   
         if(loop.loopName != "" && loops.Count < 3)
         {
-
+            //Loop Dislay Stuff
             var obj = Instantiate(LoopDisplayPrefab);
             obj.transform.SetParent(this.transform);
-            obj.transform.localPosition = new Vector3(0,0-loops.Count*50-25,0);
+            obj.transform.localPosition = new Vector3(0,0-loops.Count*40-25,0);
             obj.transform.GetChild(0).GetComponent<TMP_Text>().text = loop.loopName;
-            obj.GetComponentInChildren<Button>().onClick.AddListener(() =>
+
+            //Remove Button
+            obj.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    loops.Remove(loop);
+                    loops.Remove(loops[loopDisplays.IndexOf(obj)]);
+                    loopDisplays.Remove(obj);
+                    int i = 0;
+                    foreach(GameObject gameObj in loopDisplays)
+                    {
+                        gameObj.transform.localPosition = new Vector3(0,0-i*40-25,0); 
+                        i++;
+                    }
+
                     Destroy(obj.gameObject);
                 }
             );
 
+            //Edit button
+            obj.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    var input = Instantiate(AddLoopPrefab);
+                    input.transform.SetParent(this.transform);
+                    input.transform.localPosition = Vector3.zero;
+                    var script = input.GetComponent<AddLoopScript>();
+                    script.selectedAudioClip = selectedAudioClip;
+                    script.loopInput = GetComponent<ILoopInput>();
+                    script.EditLoop(loops[loopDisplays.IndexOf(obj)],loopDisplays.IndexOf(obj));                  
+
+                }
+            );
+
+            loopDisplays.Add(obj);
             loops.Add(loop);
         }
             
+    }
+
+    public void LoopInputEdit(int loopIndex, Loop editedLoop)
+    {
+        if(editedLoop.loopName != "")
+        {
+            loops[loopIndex] = editedLoop;
+            loopDisplays[loopIndex].transform.GetChild(0).GetComponent<TMP_Text>().text = editedLoop.loopName;
+        }
     }
 
 
@@ -84,14 +119,14 @@ public class NewPannelInput : MonoBehaviour, LoopInput
         audio.Loops = loops;
         
         
-        ownerAddPannel.NewPannel(audio);
+        newPannelInputOwner.EditPannel(audio);
         Destroy(this.gameObject);
 
     }
 
     void Cancel()
     {
-        ownerAddPannel.Cancel();
+        newPannelInputOwner.CancelPannel();
         Destroy(this.gameObject);
     }
 
@@ -122,7 +157,7 @@ public class NewPannelInput : MonoBehaviour, LoopInput
         obj.transform.localPosition = Vector3.zero;
         var script = obj.GetComponent<AddLoopScript>();
         script.selectedAudioClip = selectedAudioClip;
-        script.loopInput = GetComponent<LoopInput>();
+        script.loopInput = GetComponent<ILoopInput>();
         
     }
 
@@ -173,18 +208,26 @@ public class NewPannelInput : MonoBehaviour, LoopInput
             {
                 selectedAudioClip = null;
                 ConfirmButton.interactable = false;
+                PlayButton.interactable = false;
+                AddLoopButton.interactable = false;
                 
             }
             else
             {
                 selectedAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
                 ConfirmButton.interactable = true;
-
+                PlayButton.interactable = true;
+                AddLoopButton.interactable = true;
             }
 
         }
 
     }
 
+}
 
+public interface INewPannelInput
+{
+    public void EditPannel(Audio audio);
+    public void CancelPannel();
 }
