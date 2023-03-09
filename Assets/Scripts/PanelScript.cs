@@ -32,22 +32,8 @@ public class PanelScript : MonoBehaviour, INewPannelInput
 
 
     //The Audio source
-    [SerializeField] AudioSource audioSource;
-    //If the sound is stopping
-    [SerializeField] public bool StopSound = false;
-
-    //loop relateded vars
-    private float stopTime;
-    private bool loopPlaying;
-    private Loop currentLoop;
-
-
-    //Easy acces vars
-    float AudioTime {get => audioSource.time; set => audioSource.time = value;}
-    float AudioLenght {get => audioItem.GetAudioClip().length;}
-    
-
-
+    [SerializeField] GameObject AudioSourceObjectPrefab;
+    [SerializeField] AudioSourceScript CurrentASScript;
 
     // Start is called before the first frame update
     void Start()
@@ -84,9 +70,7 @@ public class PanelScript : MonoBehaviour, INewPannelInput
             }
 
         }
-
-        //Set the AudioSource Clip to the AudioItem audioclip
-        
+       
 
         //Add Listeners to the Play and End Button
         PlayButton.onClick.AddListener( () => PlayFull() );
@@ -162,102 +146,51 @@ public class PanelScript : MonoBehaviour, INewPannelInput
     //Play the audio normal and adds sets the Loop
     public void PlayLoop(Loop loop)
     {
-        StopSound = false;
-        stopTime =  AudioLenght;
+        if(CurrentASScript == null)
+        {
+            var obj = Instantiate(AudioSourceObjectPrefab);
+            CurrentASScript = obj.GetComponent<AudioSourceScript>();
+            CurrentASScript.audioClip = audioItem.GetAudioClip();
+            CurrentASScript.owner = this;
+            CurrentASScript.playLoopOnStart = true;
+        }
 
-        loopPlaying = true;
-        currentLoop = loop;
-        audioSource.Play();
-        AudioManager.Instance.SetAsCurrent(audioGroup,this);
-
+        CurrentASScript.PlayLoop(loop);
     }
 
     //Play the full audio
     public void PlayFull()
     {
-        StopSound = false;
-        loopPlaying = false;
-        stopTime =  AudioLenght;
-        audioSource.Play();
-        AudioManager.Instance.SetAsCurrent(audioGroup,this);
+        if(CurrentASScript == null)
+        {
+            var obj = Instantiate(AudioSourceObjectPrefab);
+            CurrentASScript = obj.GetComponent<AudioSourceScript>();
+            CurrentASScript.audioClip = audioItem.GetAudioClip();
+            CurrentASScript.owner = this;
+            CurrentASScript.playFullOnStart = true;
+        }
+
+        CurrentASScript.PlayFull();
     }
 
     //Stops the audio   
     public void Stop()
     {  
-        //If the audio is already busy with stopping it stopts it immidiatly
-        if(StopSound == true)
+        if(CurrentASScript != null)
         {
-            audioSource.Stop();
-            AudioManager.Instance.RemoveAsCurrent(audioGroup,this);
-        }  
-
-        //If there is no loop playing set the stop time
-        if(!loopPlaying)
-        {
-            stopTime = AudioTime + AudioManager.Instance.FadeValue;
+            CurrentASScript.Stop();
         }
+    }   
 
-        loopPlaying = false;
-        StopSound = true;
+    public void StoppedPlaying()
+    {
+
     }
-
-
 
     // Update is called once per frame
     void Update()
     {
-        //Check if the audio Source is playing
-        if(audioSource.isPlaying)
-        {   
-            //Check if the fade value is not 0 seconds
-            if(AudioManager.Instance.FadeValue != 0)
-            {
-                //Fade in
-                if(AudioTime <= AudioManager.Instance.FadeValue)
-                {
-                    audioSource.volume = (AudioTime/AudioManager.Instance.FadeValue)*AudioManager.Instance.VolumeValue;
-                }
-                else
-                if(stopTime - AudioTime <= AudioManager.Instance.FadeValue)
-                {
-                    audioSource.volume = ((stopTime - AudioTime)/AudioManager.Instance.FadeValue)*AudioManager.Instance.VolumeValue;
-
-                    if(stopTime - AudioTime <= 0)
-                    {
-                        audioSource.Stop();
-                        AudioManager.Instance.RemoveAsCurrent(audioGroup,this);
-                    } 
-
-                }
-                else
-                {
-                    audioSource.volume = AudioManager.Instance.VolumeValue;
-                }
-                
-
-            }
-            else
-            {
-                audioSource.volume = AudioManager.Instance.VolumeValue;
-                if(stopTime - AudioTime <= 0)
-                {
-                    audioSource.Stop();
-                    AudioManager.Instance.RemoveAsCurrent(audioGroup,this);
-                }
-
-            }
-
-            if(loopPlaying)
-            {
-                if(AudioTime >= currentLoop.loopTime.y)
-                {
-                    AudioTime = currentLoop.loopTime.x;
-                    
-                }
-            }
-
-        }
+       
     }
 
     //File Opening
@@ -276,14 +209,13 @@ public class PanelScript : MonoBehaviour, INewPannelInput
 
             if(uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
-                
+                //error
                 
             }
             else
             {
                 audioItem.SetAudioClip(DownloadHandlerAudioClip.GetContent(uwr));
-                audioSource.clip = audioItem.GetAudioClip();
-                
+    
 
             }
 

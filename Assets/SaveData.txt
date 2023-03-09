@@ -1,0 +1,38 @@
+{
+    "SoundGroups": [
+        {
+            "_customID": -1344483760,
+            "GroupName": "Combat Music",
+            "AudioList": [
+                {
+                    "audioName": "Death Knell",
+                    "audioPath": "C:\\Users\\daans\\Downloads\\Death Knell.mp3",
+                    "Loops": [
+                        {
+                            "loopName": "Main",
+                            "loopTime": {
+                                "x": 24.42478370666504,
+                                "y": 60.41920471191406
+                            }
+                        }
+                    ]
+                },
+                {
+                    "audioName": "Tension",
+                    "audioPath": "C:\\Users\\daans\\Downloads\\Tension.mp3",
+                    "Loops": []
+                },
+                {
+                    "audioName": "The Fall of The Hammer",
+                    "audioPath": "C:\\Users\\daans\\Downloads\\Fall of the Hammer.mp3",
+                    "Loops": []
+                }
+            ]
+        },
+        {
+            "_customID": 259931802,
+            "GroupName": "BG Music",
+            "AudioList": []
+        }
+    ]
+}

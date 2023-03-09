@@ -15,8 +15,7 @@ public class AudioManager : MonoBehaviour
     public float FadeValue {get => fadeInSlider.value; }
     public float VolumeValue {get => volumeSlider.value; }
 
-    [SerializeField] public PanelScript currentBackgroundMusic;
-    [SerializeField] public PanelScript currentCombatMusic;
+    public List<AudioSourceScript> currentlyPlayingAudios;
 
 
     public static AudioManager Instance;
@@ -29,17 +28,13 @@ public class AudioManager : MonoBehaviour
 
         Instance = this;
 
-
+        currentlyPlayingAudios = new List<AudioSourceScript>();
         //Call when the StopSound button is pressed
         StopSoundButton.onClick.AddListener(
             () =>
             {   
-                //Stop the current music
-                if(currentCombatMusic != null)
-                {
-                    currentCombatMusic.Stop();
-                }
-
+              
+               
             }
         );
 
@@ -47,40 +42,22 @@ public class AudioManager : MonoBehaviour
     }
 
     //Set a pannel as current playing pannel
-    public void SetAsCurrent(string audioGroup, PanelScript pannel)
+    public void SetAsCurrent(AudioSourceScript audioSource)
     {
-        switch(audioGroup)
+        if(!currentlyPlayingAudios.Contains(audioSource))
         {
-            case "CombatMusic":
-                if(currentCombatMusic != null)
-                {
-                    currentCombatMusic.Stop();
-                }
-
-                currentCombatMusic = pannel;
-
-            break;
-
-        
+            currentlyPlayingAudios.Add(audioSource);
         }
 
     }
 
     //Remove as current playing pannel
-    public void RemoveAsCurrent(string audioGroup, PanelScript pannel)
+    public void RemoveAsCurrent(AudioSourceScript audioSource)
     {
-        switch(audioGroup)
+        if(currentlyPlayingAudios.Contains(audioSource))
         {
-            case "CombatMusic":
-                if(currentCombatMusic == pannel)
-                {
-                    currentCombatMusic = null;
-                }
-
-
-            break;
-
-        
+            currentlyPlayingAudios.Remove(audioSource);
+            Destroy(audioSource.gameObject);
         }
     }
 
