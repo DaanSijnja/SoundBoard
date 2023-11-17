@@ -37,7 +37,7 @@ public class SaveAndLoadManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        filepath = Application.dataPath + "/" + saveData +".txt";
+        filepath = Application.persistentDataPath + "/" + saveData +".txt";
         tabList = new List<BuildUI>();
 
         if(Instance == null)
@@ -78,7 +78,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
         AddTabButton = Instantiate(TabButtonPrefab);
         AddTabButton.transform.SetParent(ButtonMask);
-        AddTabButton.transform.localPosition = new Vector3(20,80-i*30,0);
+        AddTabButton.transform.localPosition = new Vector3(14,68-i*34,0);
         AddTabButton.GetComponentInChildren<TMP_Text>().text = "Add Group";
             
         AddTabButton.GetComponent<Button>().onClick.AddListener(() => {AddSoundGroup(new SoundGroup("New Tab"),(tabList.Count),true); UpdateTabButtons();});
@@ -107,6 +107,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
         var Tab = Instantiate(TabPrefab);
         Tab.transform.SetParent(this.transform);
+        Tab.transform.localPosition = new Vector3(0,0,0);
 
         BuildUI TabScript = Tab.GetComponent<BuildUI>();
         tabList.Add(TabScript);
@@ -116,7 +117,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
         var button = Instantiate(TabButtonPrefab);
         button.transform.SetParent(ButtonMask);
-        button.transform.localPosition = new Vector3(20,80-location*30,0);
+        button.transform.localPosition = new Vector3(14,68-location*34,0);
         button.GetComponentInChildren<TMP_Text>().text = soundGroup.GroupName;
         
         tabButtonList.Add(button);
@@ -133,11 +134,11 @@ public class SaveAndLoadManager : MonoBehaviour
 
         foreach(GameObject button in tabButtonList)
         {
-            button.transform.localPosition = new Vector3(20,80-i*30 + listLenght*TabSlider.value,0);
+            button.transform.localPosition = new Vector3(14,68-i*34 + listLenght*TabSlider.value,0);
             i++;
         }
 
-        AddTabButton.transform.localPosition = new Vector3(20,80-i*30 + listLenght*TabSlider.value,0);
+        AddTabButton.transform.localPosition = new Vector3(14,68-i*34 + listLenght*TabSlider.value,0);
 
     }
 
